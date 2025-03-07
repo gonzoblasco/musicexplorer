@@ -38,8 +38,19 @@ export interface MusicVideo {
   strDescriptionEN?: string;
 }
 
+export interface Track {
+  idTrack: string;
+  idAlbum: string;
+  strTrack: string;
+  intDuration?: string;
+  strMusicVid?: string;
+  intTrackNumber?: string;
+  strDescriptionEN?: string;
+}
+
 export interface ApiResponse<T> {
   artists?: Artist[];
   album?: Album[];
   mvids?: MusicVideo[];
+  track?: Track[];
 }

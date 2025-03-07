@@ -1,5 +1,5 @@
 // lib/api/theAudioDB.ts
-import { ApiResponse, Artist, Album, MusicVideo } from "../../types";
+import { ApiResponse, Artist, Album, MusicVideo, Track } from "../../types";
 import { POPULAR_ARTIST_IDS } from "../utils/constants";
 
 const API_KEY = "2";
@@ -115,6 +115,44 @@ export async function getPopularArtists(): Promise<Artist[]> {
     return Array.from(artistMap.values());
   } catch (error) {
     console.error("Error obteniendo artistas populares:", error);
+    return [];
+  }
+}
+
+export async function getAlbumById(albumId: string): Promise<Album | null> {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/${API_KEY}/album.php?m=${albumId}`,
+    );
+
+    if (!response.ok) {
+      throw new Error("Error obteniendo datos del álbum");
+    }
+
+    const data: ApiResponse<Album> = await response.json();
+
+    return data.album && data.album.length > 0 ? data.album[0] : null;
+  } catch (error) {
+    console.error("Error obteniendo álbum:", error);
+    return null;
+  }
+}
+
+export async function getTracksByAlbumId(albumId: string): Promise<Track[]> {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/${API_KEY}/track.php?m=${albumId}`,
+    );
+
+    if (!response.ok) {
+      throw new Error("Error obteniendo tracks del álbum");
+    }
+
+    const data: ApiResponse<Track> = await response.json();
+
+    return data.track || [];
+  } catch (error) {
+    console.error("Error obteniendo tracks:", error);
     return [];
   }
 }
