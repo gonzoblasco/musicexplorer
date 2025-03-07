@@ -1,14 +1,9 @@
 // app/api/album/[id]/route.ts
 import { getAlbumById } from "../../../../lib/api/theAudioDB";
 import { NextResponse } from "next/server";
-import { type NextRequest } from "next/server";
 
-// Tipo correcto para las rutas de API en Next.js 15
-export async function GET(
-  request: NextRequest,
-  context: { params: { id: string } },
-) {
-  const albumId = context.params.id;
+export async function GET(request: Request, context: any) {
+  const albumId = context.params?.id;
 
   if (!albumId) {
     return NextResponse.json(
