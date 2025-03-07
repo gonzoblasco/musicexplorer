@@ -1,6 +1,16 @@
-// next.config.js
-/** @type {import('next').NextConfig} */
+// next.config.ts
+
+/**
+ * @type {import('next').NextConfig}
+ * Configuración principal de Next.js para el proyecto.
+ */
 const nextConfig = {
+  // Configuración para desactivar el modo estricto de React (opcional)
+  // Durante el desarrollo o pruebas, desactiva reactStrictMode si hay problemas
+  // relacionados con renderizados múltiples inesperados.
+  reactStrictMode: false,
+
+  // Configuración de imágenes remotas permitidas
   images: {
     remotePatterns: [
       {
@@ -15,8 +25,10 @@ const nextConfig = {
       },
     ],
   },
+
+  // Configuraciones experimentales (utilizar con precaución)
   experimental: {
-    optimizeCss: true,
+    optimizeCss: true, // Habilita optimización de CSS en tiempo de compilación
   },
 };
 

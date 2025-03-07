@@ -1,78 +1,48 @@
-// app/artist/[id]/page.tsx
-"use client";
+// Archivo: app/artist/[id]/page.tsx
 
-import { useEffect, useState } from "react";
-import { Artist, Album } from "../../../types";
+import ArtistPageClient from "../../../components/artist/ArtistPageClient"; // Componente cliente
 import {
   getArtistById,
   getAlbumsByArtistId,
 } from "../../../lib/api/theAudioDB";
-import ArtistDetail from "../../../components/artist/ArtistDetail";
-import AlbumList from "../../../components/album/AlbumList";
-import Loader from "../../../components/ui/Loader";
-import ErrorMessage from "../../../components/common/ErrorMessage";
 
-interface ArtistPageProps {
-  params: {
-    id: string;
-  };
-}
+export default async function ArtistPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const id = params?.id;
 
-export default function ArtistPage({ params }: ArtistPageProps) {
-  // Extraemos el ID de manera segura
-  const id = params?.id || "";
-
-  const [artist, setArtist] = useState<Artist | null>(null);
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchArtistData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const [artistData, albumsData] = await Promise.all([
-          getArtistById(id),
-          getAlbumsByArtistId(id),
-        ]);
-
-        if (!artistData) {
-          throw new Error("No se encontró el artista");
-        }
-
-        setArtist(artistData);
-        setAlbums(albumsData);
-      } catch (err) {
-        setError("Error al cargar la información del artista.");
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchArtistData();
-  }, [id]);
-
-  if (isLoading) {
+  if (!id || typeof id !== "string") {
+    // Renderizamos un mensaje de error si el ID no es válido
     return (
-      <div className="py-12">
-        <Loader />
+      <div>
+        <h1>Error</h1>
+        <p>ID de artista inválido o no proporcionado.</p>
       </div>
     );
   }
 
-  if (error || !artist) {
-    return <ErrorMessage message={error || "No se encontró el artista"} />;
-  }
+  try {
+    // Obtenemos todos los datos necesarios en el servidor
+    const [artist, albums] = await Promise.all([
+      getArtistById(id),
+      getAlbumsByArtistId(id),
+    ]);
 
-  return (
-    <div className="space-y-10">
-      <ArtistDetail artist={artist} />
-      <AlbumList albums={albums} />
-    </div>
-  );
+    if (!artist) {
+      throw new Error("No se encontró el artista.");
+    }
+
+    // Pasamos los datos como props al componente cliente
+    return <ArtistPageClient artist={artist} albums={albums} />;
+  } catch (err) {
+    console.error(err);
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>Hubo un problema al cargar la página del artista.</p>
+      </div>
+    );
+  }
 }
