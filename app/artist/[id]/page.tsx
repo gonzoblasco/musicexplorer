@@ -1,19 +1,14 @@
+// app/artist/[id]/page.tsx
 import ArtistPageClient from "../../../components/artist/ArtistPageClient";
 import {
   getArtistById,
   getAlbumsByArtistId,
 } from "../../../lib/api/theAudioDB";
 
-// Declaramos que los parámetros son dinámicos.
 export const dynamicParams = true;
 
-// Sobrescribimos el tipo `params` sin depender de Next.js
-export default async function ArtistPage({
-  params,
-}: {
-  params: { id: string }; // Se ignoran completamente tipos globales de Next.js
-}) {
-  const { id } = params;
+export default async function ArtistPage(props: any) {
+  const { id } = props.params;
 
   if (!id || typeof id !== "string") {
     return (
