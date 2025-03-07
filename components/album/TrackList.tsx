@@ -10,30 +10,20 @@ export default function TrackList({ tracks }: TrackListProps) {
   const formatDuration = (duration: string | undefined) => {
     if (!duration) return "N/A";
 
-    // Patrón especial para las duraciones incorrectas que vemos en la captura
-    // Formato como "38:01:46" o "83:03:20"
-    if (duration.match(/^\d+:\d{2}:\d{2}$/)) {
-      const parts = duration.split(":");
+    // Intenta convertir a número
+    const durationNum = parseInt(duration);
+    if (isNaN(durationNum)) return "N/A";
 
-      // Extraer solo los últimos 2 componentes (MM:SS)
-      // Esto asume que el valor incorrecto tiene un componente adicional al inicio
-      return `${parts[1]}:${parts[2]}`;
-    }
+    // Si es en milisegundos (lo cual parece ser el caso para la API de TheAudioDB)
+    // Convertir a segundos
+    const totalSeconds = Math.round(durationNum / 1000);
 
-    // Para otros formatos, intentamos una interpretación razonable
-    if (duration.includes(":")) {
-      return duration;
-    }
+    // Calcular minutos y segundos
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
 
-    // Para valores numéricos
-    let seconds = parseInt(duration);
-    if (isNaN(seconds)) return "N/A";
-
-    // Conversión estándar
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    // Formato minutos:segundos con padding de ceros
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   if (!tracks || tracks.length === 0) {
