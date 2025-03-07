@@ -1,4 +1,4 @@
-// components/album/AlbumCard.tsx
+// components/album/AlbumCard.tsx - versión corregida
 import Image from "next/image";
 import Link from "next/link";
 import { Album } from "../../types";
@@ -32,8 +32,11 @@ export default function AlbumCard({ album }: AlbumCardProps) {
           )}
         </div>
         <div className="p-4 flex-grow">
-          <h3 className="text-lg font-semibold">{strAlbum}</h3>
-          <div className="flex justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
+          {/* Aquí está el cambio - aseguramos que el título tenga un color adecuado en modo oscuro */}
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {strAlbum}
+          </h3>
+          <div className="flex justify-between mt-2 text-sm text-gray-600 dark:text-gray-300">
             {intYearReleased && <span>{intYearReleased}</span>}
             {strGenre && <span>{strGenre}</span>}
           </div>
