@@ -4,16 +4,8 @@ import { getAlbumById } from "../../../lib/api/theAudioDB";
 
 export const dynamicParams = true;
 
-interface AlbumPageParams {
-  id: string;
-}
-
-export default async function AlbumPage({
-  params,
-}: {
-  params: AlbumPageParams;
-}) {
-  const { id } = params;
+export default async function AlbumPage(props: any) {
+  const { id } = props.params;
 
   if (!id || typeof id !== "string") {
     return (

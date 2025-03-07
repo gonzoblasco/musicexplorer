@@ -5,9 +5,9 @@ import { type NextRequest } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: { id: string } },
 ) {
-  const albumId = params.id;
+  const albumId = context.params.id;
 
   if (!albumId) {
     return NextResponse.json(
