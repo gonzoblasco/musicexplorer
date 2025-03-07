@@ -10,25 +10,29 @@ export default function TrackList({ tracks }: TrackListProps) {
   const formatDuration = (duration: string | undefined) => {
     if (!duration) return "N/A";
 
-    // Verifica si la duración ya está en formato MM:SS
-    if (duration.includes(":")) return duration;
+    // Patrón especial para las duraciones incorrectas que vemos en la captura
+    // Formato como "38:01:46" o "83:03:20"
+    if (duration.match(/^\d+:\d{2}:\d{2}$/)) {
+      const parts = duration.split(":");
 
-    // Intenta convertir la duración a un número
-    const seconds = parseInt(duration);
-    if (isNaN(seconds)) return duration;
+      // Extraer solo los últimos 2 componentes (MM:SS)
+      // Esto asume que el valor incorrecto tiene un componente adicional al inicio
+      return `${parts[1]}:${parts[2]}`;
+    }
 
-    // TheAudioDB parece devolver la duración total en segundos
+    // Para otros formatos, intentamos una interpretación razonable
+    if (duration.includes(":")) {
+      return duration;
+    }
+
+    // Para valores numéricos
+    let seconds = parseInt(duration);
+    if (isNaN(seconds)) return "N/A";
+
+    // Conversión estándar
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
 
-    // Si los minutos son superiores a 60, convertir a formato hora:min:seg
-    if (minutes >= 60) {
-      const hours = Math.floor(minutes / 60);
-      const remainingMinutes = minutes % 60;
-      return `${hours}:${remainingMinutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
-    }
-
-    // Formato normal minutos:segundos
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
