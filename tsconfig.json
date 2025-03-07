@@ -18,7 +18,9 @@
     "jsx": "preserve",
     "incremental": true,
     "types": [
-      "node"
+      "node",
+      "jest",
+      "@testing-library/jest-dom"
     ],
     "module": "esnext",
     "plugins": [
@@ -31,7 +33,9 @@
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "types/jest-dom.d.ts",
+    "jest.setup.js"
   ],
   "exclude": [
     "node_modules"
