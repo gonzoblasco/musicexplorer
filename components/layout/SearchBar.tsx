@@ -2,14 +2,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
 export default function SearchBar() {
-  const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
-  const [search, setSearch] = useState<string>(initialQuery);
+  const [search, setSearch] = useState<string>("");
   const router = useRouter();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
