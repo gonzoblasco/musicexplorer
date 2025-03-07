@@ -3,6 +3,8 @@
 MusicExplorer es una aplicación web construida con Next.js 15 y TypeScript que te permite explorar información sobre
 artistas musicales, sus álbumes y canciones utilizando TheAudioDB API.
 
+(para verlo funcionando https://musicexplorer-gb.netlify.app[https://musicexplorer-gb.netlify.app])
+
 ![MusicExplorer Screenshot](https://github.com/gonzoblasco/musicexplorer/blob/main/public/screenshot.png)
 
 ## Características
