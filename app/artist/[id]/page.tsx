@@ -1,47 +1,46 @@
-// Archivo: app/artist/[id]/page.tsx
-
-import ArtistPageClient from "../../../components/artist/ArtistPageClient"; // Componente cliente
+import ArtistPageClient from "../../../components/artist/ArtistPageClient";
 import {
   getArtistById,
   getAlbumsByArtistId,
 } from "../../../lib/api/theAudioDB";
 
+// Declaramos que los parámetros son dinámicos.
+export const dynamicParams = true;
+
+// Sobrescribimos el tipo `params` sin depender de Next.js
 export default async function ArtistPage({
   params,
 }: {
-  params: { id: string };
+  params: { id: string }; // Se ignoran completamente tipos globales de Next.js
 }) {
-  const id = params?.id;
+  const { id } = params;
 
   if (!id || typeof id !== "string") {
-    // Renderizamos un mensaje de error si el ID no es válido
     return (
       <div>
         <h1>Error</h1>
-        <p>ID de artista inválido o no proporcionado.</p>
+        <p>ID del artista inválido.</p>
       </div>
     );
   }
 
   try {
-    // Obtenemos todos los datos necesarios en el servidor
     const [artist, albums] = await Promise.all([
       getArtistById(id),
       getAlbumsByArtistId(id),
     ]);
 
     if (!artist) {
-      throw new Error("No se encontró el artista.");
+      throw new Error("No se encontró al artista.");
     }
 
-    // Pasamos los datos como props al componente cliente
     return <ArtistPageClient artist={artist} albums={albums} />;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return (
       <div>
         <h1>Error</h1>
-        <p>Hubo un problema al cargar la página del artista.</p>
+        <p>Hubo un error cargando al artista.</p>
       </div>
     );
   }
