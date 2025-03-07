@@ -9,11 +9,26 @@ export default function TrackList({ tracks }: TrackListProps) {
   // Función para formatear la duración (de segundos a minutos:segundos)
   const formatDuration = (duration: string | undefined) => {
     if (!duration) return "N/A";
+
+    // Verifica si la duración ya está en formato MM:SS
+    if (duration.includes(":")) return duration;
+
+    // Intenta convertir la duración a un número
     const seconds = parseInt(duration);
     if (isNaN(seconds)) return duration;
 
+    // TheAudioDB parece devolver la duración total en segundos
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
+
+    // Si los minutos son superiores a 60, convertir a formato hora:min:seg
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      return `${hours}:${remainingMinutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+    }
+
+    // Formato normal minutos:segundos
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
