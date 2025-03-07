@@ -4,6 +4,12 @@ export function formatDate(dateString: string | undefined): string {
 
   try {
     const date = new Date(dateString);
+
+    // Verificar si la fecha es válida
+    if (isNaN(date.getTime())) {
+      return "N/A";
+    }
+
     return date.toLocaleDateString();
   } catch (error) {
     console.error("Error formatting date:", error);

@@ -21,7 +21,12 @@ const customJestConfig = {
       },
     ],
   },
-  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.next/"],
+  testPathIgnorePatterns: [
+    "<rootDir>/node_modules/",
+    "<rootDir>/.next/",
+    "<rootDir>/e2e/",
+    "<rootDir>/playwright/",
+  ],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   collectCoverageFrom: [
     "components/**/*.{js,jsx,ts,tsx}",

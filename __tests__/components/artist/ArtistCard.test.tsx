@@ -3,7 +3,22 @@ import { render, screen } from "@testing-library/react";
 import ArtistCard from "../../../components/artist/ArtistCard";
 import { Artist } from "../../../types";
 
-// Mock Next.js components con tipos explícitos
+// Mock del componente Card para verificar las clases pasadas a él
+jest.mock("../../../components/ui/Card", () => {
+  return ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }) => (
+    <div data-testid="card-component" className={className}>
+      {children}
+    </div>
+  );
+});
+
+// Mock de Next.js components con tipos explícitos
 jest.mock("next/image", () => ({
   __esModule: true,
   default: ({
@@ -92,10 +107,15 @@ describe("ArtistCard component", () => {
     expect(link).toHaveAttribute("href", "/artist/123");
   });
 
-  it("applies hover styles through card component", () => {
+  it("applies correct classes to Link component", () => {
     render(<ArtistCard artist={mockArtist} />);
-    // Verificar que la clase de hover está presente en el componente Card
-    const card = screen.getByTestId("next-link");
-    expect(card.className).toContain("hover:shadow-lg");
+    const link = screen.getByTestId("next-link");
+    expect(link.className).toContain("block h-full");
+  });
+
+  it("applies correct classes to Card component", () => {
+    render(<ArtistCard artist={mockArtist} />);
+    const card = screen.getByTestId("card-component");
+    expect(card.className).toContain("h-full flex flex-col cursor-pointer");
   });
 });
