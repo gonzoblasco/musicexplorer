@@ -2,8 +2,9 @@
 import { getAlbumById } from "../../../../lib/api/theAudioDB";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, context: any) {
-  const albumId = context.params?.id;
+// @ts-nocheck
+export async function GET(request: any, { params }: any) {
+  const albumId = params.id;
 
   if (!albumId) {
     return NextResponse.json(

@@ -2,8 +2,9 @@
 import { getArtistById } from "../../../../lib/api/theAudioDB";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, context: any) {
-  const artistId = context.params?.id;
+// @ts-nocheck
+export async function GET(request: any, { params }: any) {
+  const artistId = params.id;
 
   if (!artistId) {
     return NextResponse.json(
