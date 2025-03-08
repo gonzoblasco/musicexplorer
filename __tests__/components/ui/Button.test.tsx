@@ -1,46 +1,42 @@
-// __tests__/components/ui/Button.test.tsx
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom"; // Importación explícita
+import "@testing-library/jest-dom";
 import Button from "../../../components/ui/Button";
 
+const BUTTON_TEXT = "Click me";
+
 describe("Button component", () => {
-  it("renders the button with provided text", () => {
-    render(<Button>Click me</Button>);
-    expect(screen.getByText("Click me")).toBeInTheDocument();
+  const getButton = () => screen.getByText(BUTTON_TEXT);
+
+  it("renders the button with the provided text", () => {
+    render(<Button>{BUTTON_TEXT}</Button>);
+    expect(getButton()).toBeInTheDocument();
   });
 
   it("calls onClick handler when clicked", () => {
     const handleClick = jest.fn();
-    render(<Button onClick={handleClick}>Click me</Button>);
-
-    fireEvent.click(screen.getByText("Click me"));
+    render(<Button onClick={handleClick}>{BUTTON_TEXT}</Button>);
+    fireEvent.click(getButton());
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
   it("applies primary variant styles by default", () => {
-    render(<Button>Click me</Button>);
-    const button = screen.getByText("Click me");
-
-    // Verificar que tiene las clases correctas para un botón primario
-    expect(button.className).toContain("bg-indigo");
+    render(<Button>{BUTTON_TEXT}</Button>);
+    expect(getButton().className).toContain("bg-indigo");
   });
 
   it("applies secondary variant styles when specified", () => {
-    render(<Button variant="secondary">Click me</Button>);
-    const button = screen.getByText("Click me");
-
-    // Verificar que tiene las clases correctas para un botón secundario
-    expect(button.className).toContain("bg-gray");
+    render(<Button variant="secondary">{BUTTON_TEXT}</Button>);
+    expect(getButton().className).toContain("bg-gray");
   });
 
-  it("disables the button when disabled prop is true", () => {
-    render(<Button disabled>Click me</Button>);
-    expect(screen.getByText("Click me")).toBeDisabled();
+  it("disables the button when the disabled prop is true", () => {
+    render(<Button disabled>{BUTTON_TEXT}</Button>);
+    expect(getButton()).toBeDisabled();
   });
 
-  it("applies additional className when provided", () => {
-    render(<Button className="custom-class">Click me</Button>);
-    expect(screen.getByText("Click me").className).toContain("custom-class");
+  it("applies an additional className when provided", () => {
+    render(<Button className="custom-class">{BUTTON_TEXT}</Button>);
+    expect(getButton().className).toContain("custom-class");
   });
 });

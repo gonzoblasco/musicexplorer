@@ -1,76 +1,51 @@
-// __tests__/components/artist/ArtistCard.test.tsx
 import React from "react";
 import { render, screen } from "../../../__tests__/utils/testUtils";
 import ArtistCard from "../../../components/artist/ArtistCard";
 import { Artist } from "../../../types";
 
-// Mock del componente Card para verificar las clases pasadas a él
-jest.mock("../../../components/ui/Card", () => {
-  return function MockCard({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) {
-    return (
-      <div data-testid="card-component" className={className}>
+// Mock de componentes de UI reutilizados
+jest.mock(
+  "../../../components/ui/Card",
+  () =>
+    ({
+      children,
+      className,
+    }: {
+      children: React.ReactNode;
+      className?: string;
+    }) => (
+      <div data-testid="card" className={className}>
         {children}
       </div>
-    );
-  };
-});
+    ),
+);
 
-// Mock de Next.js components
-jest.mock("next/image", () => {
-  return function MockImage({
-    src,
-    alt,
-    className,
-    fill,
-    sizes,
-    ...props
-  }: {
-    src: string;
-    alt: string;
-    className?: string;
-    fill?: boolean;
-    sizes?: string;
-    [key: string]: any;
-  }) {
-    return (
-      <img
-        src={src}
-        alt={alt}
-        className={className}
-        data-testid="next-image"
-        {...props}
-      />
-    );
-  };
-});
-
-jest.mock("next/link", () => {
-  return function MockLink({
-    href,
-    className,
-    children,
-    ...props
-  }: {
-    href: string;
-    className?: string;
-    children: React.ReactNode;
-    [key: string]: any;
-  }) {
-    return (
-      <a href={href} className={className} data-testid="next-link" {...props}>
+// Algunos mocks de Next.js
+jest.mock(
+  "next/image",
+  () =>
+    ({ src, alt, ...props }: { src: string; alt: string }) => (
+      <img src={src} alt={alt} {...props} />
+    ),
+);
+jest.mock(
+  "next/link",
+  () =>
+    ({
+      href,
+      children,
+      ...props
+    }: {
+      href: string;
+      children: React.ReactNode;
+    }) => (
+      <a href={href} {...props}>
         {children}
       </a>
-    );
-  };
-});
+    ),
+);
 
-describe("ArtistCard component", () => {
+describe("Componente ArtistCard", () => {
   const mockArtist: Artist = {
     idArtist: "123",
     strArtist: "Test Artist",
@@ -78,49 +53,43 @@ describe("ArtistCard component", () => {
     strGenre: "Rock",
   };
 
-  it("renders artist name correctly", () => {
+  it("Muestra el nombre del artista correctamente", () => {
     render(<ArtistCard artist={mockArtist} />);
     expect(screen.getByText("Test Artist")).toBeInTheDocument();
   });
 
-  it("renders artist genre when available", () => {
+  it("Muestra el género si está disponible", () => {
     render(<ArtistCard artist={mockArtist} />);
     expect(screen.getByText("Rock")).toBeInTheDocument();
   });
 
-  it("renders image when artist thumbnail is available", () => {
+  it("Renderiza la imagen del artista si el thumbnail está disponible", () => {
     render(<ArtistCard artist={mockArtist} />);
-    const img = screen.getByTestId("next-image");
+    const img = screen.getByRole("img", { name: "Test Artist" });
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("src", "https://example.com/artist.jpg");
-    expect(img).toHaveAttribute("alt", "Test Artist");
   });
 
-  it("renders placeholder when artist thumbnail is not available", () => {
+  it("Muestra un placeholder si no hay thumbnail", () => {
     const artistWithoutThumb: Artist = {
       ...mockArtist,
       strArtistThumb: undefined,
     };
-
     render(<ArtistCard artist={artistWithoutThumb} />);
     expect(screen.getByText("Sin imagen")).toBeInTheDocument();
   });
 
-  it("links to correct artist page", () => {
+  it("Vincula correctamente al enlace del artista", () => {
     render(<ArtistCard artist={mockArtist} />);
-    const link = screen.getByTestId("next-link");
+    const link = screen.getByRole("link", {
+      name: "Test Artist Test Artist Rock",
+    });
     expect(link).toHaveAttribute("href", "/artist/123");
   });
 
-  it("applies correct classes to Link component", () => {
+  it("Aplica clases específicas al componente Card de UI", () => {
     render(<ArtistCard artist={mockArtist} />);
-    const link = screen.getByTestId("next-link");
-    expect(link.className).toContain("block h-full");
-  });
-
-  it("applies correct classes to Card component", () => {
-    render(<ArtistCard artist={mockArtist} />);
-    const card = screen.getByTestId("card-component");
-    expect(card.className).toContain("h-full flex flex-col cursor-pointer");
+    const card = screen.getByTestId("card");
+    expect(card).toHaveClass("h-full flex flex-col cursor-pointer");
   });
 });

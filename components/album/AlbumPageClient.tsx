@@ -1,8 +1,6 @@
-// components/album/AlbumPageClient.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
 import { useAlbumDetails, useAlbumTracks } from "../../hooks/useAlbumQueries";
 import { useArtistDetails } from "../../hooks/useArtistQueries";
 import AlbumDetail from "./AlbumDetail";
@@ -26,68 +24,45 @@ export default function AlbumPageClient({
   initialTracksData,
   initialArtistData,
 }: AlbumPageClientProps) {
-  // Estado para controlar si debemos usar los datos iniciales o consultar
-  const [shouldFetch, setShouldFetch] = useState(!initialAlbumData);
+  // Si no hay datos iniciales, se activa la búsqueda de datos
+  const shouldFetchAlbum = !initialAlbumData;
+  const shouldFetchTracks = !initialTracksData;
+  const shouldFetchArtist = !initialArtistData;
 
-  // Consulta para obtener datos del álbum solo si no tenemos datos iniciales
+  // Consulta para obtener los datos del álbum
   const {
     data: album,
     isLoading: albumLoading,
     isError: albumError,
     error: albumErrorDetails,
-  } = useAlbumDetails(albumId, { enabled: shouldFetch });
+  } = useAlbumDetails(albumId, { enabled: shouldFetchAlbum });
 
-  // Estado local para mantener los datos correctos
-  const [albumData, setAlbumData] = useState<Album | null>(
-    initialAlbumData || null,
-  );
-  const [tracksData, setTracksData] = useState<Track[]>(
-    initialTracksData || [],
-  );
-  const [artistData, setArtistData] = useState<Artist | null>(
-    initialArtistData || null,
-  );
-
-  // Consulta para obtener pistas solo si no tenemos datos iniciales
+  // Consulta para obtener los datos de las pistas
   const { data: tracks = [], isLoading: tracksLoading } = useAlbumTracks(
     albumId,
     {
-      enabled: shouldFetch && !!albumData,
+      enabled: shouldFetchTracks && !!album?.idAlbum, // Solo se consulta si hay un álbum válido
     },
   );
 
-  // Consulta para obtener datos del artista solo si no tenemos datos iniciales
+  // Consulta para obtener los datos del artista
   const { data: artist, isLoading: artistLoading } = useArtistDetails(
-    albumData?.idArtist || "",
+    album?.idArtist || "",
     {
-      enabled: shouldFetch && !!albumData?.idArtist,
+      enabled: shouldFetchArtist && !!album?.idArtist, // Solo se consulta si hay un ID de artista válido
     },
   );
 
-  // Actualizar estados locales cuando las consultas se completan
-  useEffect(() => {
-    if (album && !albumLoading) {
-      setAlbumData(album);
-    }
+  // Cargando: espera múltiples estados de carga
+  const isLoading = albumLoading || tracksLoading || artistLoading;
 
-    if (tracks.length > 0 && !tracksLoading) {
-      setTracksData(tracks);
-    }
-
-    if (artist && !artistLoading) {
-      setArtistData(artist);
-    }
-  }, [album, tracks, artist, albumLoading, tracksLoading, artistLoading]);
-
-  // Estado de carga
-  const isLoading = shouldFetch && albumLoading;
-
+  // Renderizar estado de carga
   if (isLoading) {
     return <AlbumSkeletonLoader />;
   }
 
-  // Estado de error
-  if (albumError || !albumData) {
+  // Error general en la carga del álbum
+  if (albumError || (!album && !initialAlbumData)) {
     return (
       <div className="py-8">
         <ErrorMessage
@@ -109,29 +84,38 @@ export default function AlbumPageClient({
     );
   }
 
+  // Determinar datos finales basados en lo inicial o traído por consultas
+  const finalAlbum = album || initialAlbumData;
+  const finalTracks = tracks || initialTracksData || [];
+  const finalArtist = artist || initialArtistData;
+
   return (
     <div className="space-y-8">
       {/* Detalles del álbum */}
-      <AlbumDetail album={albumData} artist={artistData} />
+      {finalAlbum && (
+        <AlbumDetail album={finalAlbum} artist={finalArtist || null} />
+      )}
 
       {/* Lista de pistas */}
-      {shouldFetch && tracksLoading ? (
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-6">Pistas</h2>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-            {Array(8)
-              .fill(0)
-              .map((_, i) => (
-                <div
-                  key={i}
-                  className="h-10 bg-gray-200 dark:bg-gray-700 rounded mb-2 animate-pulse"
-                ></div>
-              ))}
-          </div>
-        </div>
-      ) : (
-        <TrackList tracks={tracksData} />
-      )}
+      <div className="mt-8">
+        {tracksLoading ? (
+          <>
+            <h2 className="text-2xl font-bold mb-6">Pistas</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+              {Array(8)
+                .fill(0)
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-10 bg-gray-200 dark:bg-gray-700 rounded mb-2 animate-pulse"
+                  ></div>
+                ))}
+            </div>
+          </>
+        ) : (
+          <TrackList tracks={finalTracks} />
+        )}
+      </div>
     </div>
   );
 }

@@ -21,7 +21,8 @@ describe("useDebounce hook", () => {
 
   it("should update the value after the specified delay", () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: { value: string; delay: number }) =>
+        useDebounce(value, delay),
       { initialProps: { value: "initial value", delay: 500 } },
     );
 
@@ -53,7 +54,8 @@ describe("useDebounce hook", () => {
 
   it("should reset the timer when value changes before delay completes", () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: { value: string; delay: number }) =>
+        useDebounce(value, delay),
       { initialProps: { value: "initial value", delay: 500 } },
     );
 
@@ -91,7 +93,8 @@ describe("useDebounce hook", () => {
 
   it("should handle different delay values", () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: { value: string; delay: number }) =>
+        useDebounce(value, delay),
       { initialProps: { value: "test", delay: 1000 } },
     );
 
@@ -109,7 +112,8 @@ describe("useDebounce hook", () => {
 
   it("should handle null and undefined values correctly", () => {
     const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
+      ({ value, delay }: { value: string | null | undefined; delay: number }) =>
+        useDebounce(value, delay),
       { initialProps: { value: "initial", delay: 500 } },
     );
 
@@ -136,5 +140,31 @@ describe("useDebounce hook", () => {
 
     // Debería manejar undefined correctamente
     expect(result.current).toBe(undefined);
+  });
+
+  it("should correctly handle a delay of 0", () => {
+    const { result, rerender } = renderHook(
+      ({ value, delay }: { value: string; delay: number }) =>
+        useDebounce(value, delay),
+      { initialProps: { value: "test", delay: 0 } },
+    );
+
+    rerender({ value: "new test", delay: 0 });
+
+    // No debería haber retraso
+    expect(result.current).toBe("new test");
+  });
+
+  it("should handle negative delays gracefully", () => {
+    const { result, rerender } = renderHook(
+      ({ value, delay }: { value: string; delay: number }) =>
+        useDebounce(value, delay),
+      { initialProps: { value: "test", delay: -100 } },
+    );
+
+    rerender({ value: "new test", delay: -100 });
+
+    // Tratar delay negativo como 0
+    expect(result.current).toBe("new test");
   });
 });

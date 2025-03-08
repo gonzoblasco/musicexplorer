@@ -1,14 +1,21 @@
 // hooks/useDebounce.ts
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
+    // Si el delay es <= 0, actualizar inmediatamente
+    if (delay <= 0) {
+      setDebouncedValue(value);
+      return;
+    }
+
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
 
+    // Limpiar el timeout anterior si el valor cambia antes de completarse
     return () => {
       clearTimeout(handler);
     };
@@ -16,3 +23,5 @@ export default function useDebounce<T>(value: T, delay: number): T {
 
   return debouncedValue;
 }
+
+export default useDebounce;

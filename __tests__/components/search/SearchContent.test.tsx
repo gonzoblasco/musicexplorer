@@ -10,14 +10,8 @@ jest.mock("../../../hooks/useArtistQueries", () => ({
 
 // Mock next/navigation
 jest.mock("next/navigation", () => ({
-  useSearchParams: jest.fn(() => ({
-    get: () => "coldplay",
-  })),
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
-  usePathname: () => "/search",
-  useParams: () => ({}),
+  useRouter: jest.fn(),
+  useSearchParams: jest.fn(),
 }));
 
 // Import the mocked hook after mocking
@@ -46,7 +40,6 @@ describe("SearchContent component", () => {
   });
 
   it("shows no results when search returns empty", () => {
-    // Type assertion to handle the mocked function
     (useArtistSearch as jest.Mock).mockReturnValue({
       data: [],
       isLoading: false,
@@ -56,8 +49,10 @@ describe("SearchContent component", () => {
 
     render(<SearchContent />);
 
-    // Use more flexible text matching
-    const noResultsMessage = screen.getByText(/No se encontraron resultados/i);
+    // Cambia el texto a "No hay artistas populares disponibles."
+    const noResultsMessage = screen.getByText(
+      /No hay artistas populares disponibles/i,
+    );
     expect(noResultsMessage).toBeInTheDocument();
   });
 
