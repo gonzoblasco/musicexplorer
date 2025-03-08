@@ -21,11 +21,18 @@ const customJestConfig = {
       },
     ],
   },
+  // Cambia el patrón de test para excluir específicamente los utils
+  testMatch: [
+    "**/__tests__/**/*.(spec|test).[jt]s?(x)",
+    "**/__tests__/**/!(testUtils).[jt]s?(x)",
+  ],
+  // O alternativamente, especifica testPathIgnorePatterns:
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",
     "<rootDir>/.next/",
     "<rootDir>/e2e/",
     "<rootDir>/playwright/",
+    "<rootDir>/__tests__/utils/testUtils.tsx",
   ],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   collectCoverageFrom: [

@@ -1,6 +1,6 @@
 // __tests__/components/search/SearchContent.test.tsx
 import React from "react";
-import { render } from "@testing-library/react";
+import { render } from "../../utils/testUtils"; // Importamos desde nuestro archivo de utilidades
 import SearchContent from "../../../components/search/SearchContent";
 
 // Mock de next/navigation
@@ -10,26 +10,21 @@ jest.mock("next/navigation", () => ({
     push: jest.fn(),
   }),
   usePathname: () => "/search",
+  useParams: () => ({}),
 }));
 
-// Desactivar temporalmente las advertencias y errores de consola
-const originalConsoleWarn = console.warn;
-const originalConsoleError = console.error;
-
-beforeAll(() => {
-  console.warn = jest.fn();
-  console.error = jest.fn();
-});
-
-afterAll(() => {
-  console.warn = originalConsoleWarn;
-  console.error = originalConsoleError;
-});
+// Mock de nuestros hooks de consulta
+jest.mock("../../../hooks/useArtistQueries", () => ({
+  useArtistSearch: () => ({
+    data: [],
+    isLoading: false,
+    isError: false,
+  }),
+}));
 
 describe("SearchContent component", () => {
   it("renders without crashing", () => {
-    // Simplemente verificamos que no hay errores en el renderizado
-    // No realizamos ninguna aserción sobre el comportamiento interno
+    // Ahora usamos el render personalizado que incluye QueryClientProvider
     expect(() => {
       render(<SearchContent />);
     }).not.toThrow();

@@ -1,9 +1,5 @@
 // __tests__/lib/api/theAudioDB.test.ts
-import {
-  searchArtist,
-  getArtistById,
-  getAlbumsByArtistId,
-} from "../../../lib/api/theAudioDB";
+import { searchArtist, getArtistById } from "../../../lib/api/theAudioDB";
 
 // Mock global fetch
 global.fetch = jest.fn();
@@ -36,14 +32,22 @@ describe("TheAudioDB API functions", () => {
       expect(result).toEqual(mockArtistData.artists);
     });
 
-    it("returns empty array when API call fails", async () => {
+    it("throws error when API call fails", async () => {
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
+        status: 404,
       });
 
-      const result = await searchArtist("nonexistent");
+      await expect(searchArtist("nonexistent")).rejects.toThrow(
+        "Error en la búsqueda",
+      );
+    });
 
+    it("returns empty array when query is empty", async () => {
+      const result = await searchArtist("");
       expect(result).toEqual([]);
+      // No debería llamar a fetch con una búsqueda vacía
+      expect(fetch).not.toHaveBeenCalled();
     });
 
     it("returns empty array when API response has no artists", async () => {
@@ -76,13 +80,31 @@ describe("TheAudioDB API functions", () => {
       expect(result).toEqual(mockArtist);
     });
 
-    it("returns null when API call fails", async () => {
+    it("throws error when API call fails", async () => {
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
+        status: 500,
+      });
+
+      await expect(getArtistById("nonexistent")).rejects.toThrow(
+        "Error obteniendo datos del artista",
+      );
+    });
+
+    it("throws error when ID is empty", async () => {
+      await expect(getArtistById("")).rejects.toThrow(
+        "Se requiere ID de artista",
+      );
+      expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it("returns null when API response has no artists", async () => {
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ artists: null }),
       });
 
       const result = await getArtistById("nonexistent");
-
       expect(result).toBeNull();
     });
   });

@@ -1,39 +1,19 @@
 // components/home/HomeContent.tsx
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Artist } from "../../types";
+import { usePopularArtists } from "../../hooks/useArtistQueries";
 import SearchBar from "../layout/SearchBar";
 import ArtistList from "../artist/ArtistList";
 import Loader from "../ui/Loader";
 import Link from "next/link";
 
 export default function HomeContent() {
-  const [popularArtists, setPopularArtists] = useState<Artist[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchPopularArtists = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch("/api/popular");
-        if (!response.ok) {
-          throw new Error("Failed to fetch popular artists");
-        }
-        const data = await response.json();
-        setPopularArtists(data.artists || []);
-      } catch (error) {
-        console.error("Error fetching popular artists:", error);
-        setError("No se pudieron cargar los artistas populares");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPopularArtists();
-  }, []);
+  const {
+    data: popularArtists = [],
+    isLoading,
+    isError,
+    error,
+  } = usePopularArtists();
 
   return (
     <div className="flex flex-col items-center py-12">
@@ -57,9 +37,13 @@ export default function HomeContent() {
           <div className="py-12">
             <Loader />
           </div>
-        ) : error ? (
+        ) : isError ? (
           <div className="text-center py-8">
-            <p className="text-red-500">{error}</p>
+            <p className="text-red-500">
+              {error instanceof Error
+                ? error.message
+                : "Error al cargar artistas populares"}
+            </p>
           </div>
         ) : (
           <ArtistList artists={popularArtists} />

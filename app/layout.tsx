@@ -1,6 +1,7 @@
 // app/layout.tsx
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "../components/ThemeProvider";
+import { QueryProvider } from "../components/QueryProvider";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import "./globals.css";
@@ -21,13 +22,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen flex flex-col`}>
-        <ThemeProvider>
-          <Header />
-          <main className="flex-grow container mx-auto px-4 py-8">
-            {children}
-          </main>
-          <Footer />
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider>
+            <Header />
+            <main className="flex-grow container mx-auto px-4 py-8">
+              {children}
+            </main>
+            <Footer />
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );
