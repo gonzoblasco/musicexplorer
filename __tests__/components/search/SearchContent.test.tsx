@@ -14,13 +14,18 @@ jest.mock("next/navigation", () => ({
 }));
 
 // Mock de nuestros hooks de consulta
-jest.mock("../../../hooks/useArtistQueries", () => ({
-  useArtistSearch: () => ({
-    data: [],
-    isLoading: false,
-    isError: false,
-  }),
-}));
+jest.mock("../../../hooks/useArtistQueries", () => {
+  const actual = jest.requireActual("../../../hooks/useArtistQueries");
+  return {
+    ...actual,
+    useArtistSearch: () => ({
+      data: [],
+      isLoading: false,
+      isError: false,
+      error: null,
+    }),
+  };
+});
 
 describe("SearchContent component", () => {
   it("renders without crashing", () => {
@@ -28,5 +33,33 @@ describe("SearchContent component", () => {
     expect(() => {
       render(<SearchContent />);
     }).not.toThrow();
+  });
+
+  it("shows loading state", () => {
+    jest.mock("../../../hooks/useArtistQueries", () => ({
+      useArtistSearch: () => ({
+        data: [],
+        isLoading: true,
+        isError: false,
+        error: null,
+      }),
+    }));
+
+    const { getByTestId } = render(<SearchContent />);
+    expect(getByTestId("loader")).toBeInTheDocument();
+  });
+
+  it("shows error state", () => {
+    jest.mock("../../../hooks/useArtistQueries", () => ({
+      useArtistSearch: () => ({
+        data: [],
+        isLoading: false,
+        isError: true,
+        error: new Error("Test error"),
+      }),
+    }));
+
+    const { getByText } = render(<SearchContent />);
+    expect(getByText("Test error")).toBeInTheDocument();
   });
 });
