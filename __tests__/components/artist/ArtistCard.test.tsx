@@ -1,69 +1,23 @@
+// __tests__/components/artist/ArtistCard.test.tsx
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import ArtistCard from "../../../components/artist/ArtistCard";
 import { Artist } from "../../../types";
 
-// Mock del componente Card para verificar las clases pasadas a él
-jest.mock("../../../components/ui/Card", () => {
-  return ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => (
-    <div data-testid="card-component" className={className}>
-      {children}
-    </div>
-  );
+// Importar los mocks existentes
+jest.mock("next/image", () => {
+  return {
+    __esModule: true,
+    default: require("../../../__mocks__/nextMocks").mockNextImage,
+  };
 });
 
-// Mock de Next.js components con tipos explícitos
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: ({
-    src,
-    alt,
-    className,
-    fill,
-    sizes,
-    ...props
-  }: {
-    src: string;
-    alt: string;
-    className?: string;
-    fill?: boolean;
-    sizes?: string;
-    [key: string]: any;
-  }) => (
-    <img
-      src={src}
-      alt={alt}
-      className={className}
-      data-testid="next-image"
-      {...props}
-    />
-  ),
-}));
-
-jest.mock("next/link", () => ({
-  __esModule: true,
-  default: ({
-    href,
-    className,
-    children,
-    ...props
-  }: {
-    href: string;
-    className?: string;
-    children: React.ReactNode;
-    [key: string]: any;
-  }) => (
-    <a href={href} className={className} data-testid="next-link" {...props}>
-      {children}
-    </a>
-  ),
-}));
+jest.mock("next/link", () => {
+  return {
+    __esModule: true,
+    default: require("../../../__mocks__/nextMocks").mockNextLink,
+  };
+});
 
 describe("ArtistCard component", () => {
   const mockArtist: Artist = {

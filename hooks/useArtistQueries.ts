@@ -27,10 +27,13 @@ export function usePopularArtists() {
 }
 
 // Hook para obtener detalles de un artista
-export function useArtistDetails(artistId: string, p0: { enabled: boolean }) {
+export function useArtistDetails(
+  artistId: string,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ["artist", artistId],
     queryFn: () => getArtistById(artistId),
-    enabled: !!artistId,
+    enabled: options?.enabled !== false && !!artistId,
   });
 }
