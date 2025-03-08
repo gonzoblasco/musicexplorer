@@ -1,27 +1,29 @@
+// __tests__/components/artist/ArtistCard.test.tsx
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "../../../__tests__/utils/testUtils";
 import ArtistCard from "../../../components/artist/ArtistCard";
 import { Artist } from "../../../types";
 
 // Mock del componente Card para verificar las clases pasadas a él
 jest.mock("../../../components/ui/Card", () => {
-  return ({
+  return function MockCard({
     children,
     className,
   }: {
     children: React.ReactNode;
     className?: string;
-  }) => (
-    <div data-testid="card-component" className={className}>
-      {children}
-    </div>
-  );
+  }) {
+    return (
+      <div data-testid="card-component" className={className}>
+        {children}
+      </div>
+    );
+  };
 });
 
-// Mock de Next.js components con tipos explícitos
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: ({
+// Mock de Next.js components
+jest.mock("next/image", () => {
+  return function MockImage({
     src,
     alt,
     className,
@@ -35,20 +37,21 @@ jest.mock("next/image", () => ({
     fill?: boolean;
     sizes?: string;
     [key: string]: any;
-  }) => (
-    <img
-      src={src}
-      alt={alt}
-      className={className}
-      data-testid="next-image"
-      {...props}
-    />
-  ),
-}));
+  }) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        data-testid="next-image"
+        {...props}
+      />
+    );
+  };
+});
 
-jest.mock("next/link", () => ({
-  __esModule: true,
-  default: ({
+jest.mock("next/link", () => {
+  return function MockLink({
     href,
     className,
     children,
@@ -58,12 +61,14 @@ jest.mock("next/link", () => ({
     className?: string;
     children: React.ReactNode;
     [key: string]: any;
-  }) => (
-    <a href={href} className={className} {...props}>
-      {children}
-    </a>
-  ),
-}));
+  }) {
+    return (
+      <a href={href} className={className} data-testid="next-link" {...props}>
+        {children}
+      </a>
+    );
+  };
+});
 
 describe("ArtistCard component", () => {
   const mockArtist: Artist = {
@@ -103,15 +108,13 @@ describe("ArtistCard component", () => {
 
   it("links to correct artist page", () => {
     render(<ArtistCard artist={mockArtist} />);
-    // Usar getByRole en lugar de getByTestId
-    const link = screen.getByRole("link");
+    const link = screen.getByTestId("next-link");
     expect(link).toHaveAttribute("href", "/artist/123");
   });
 
   it("applies correct classes to Link component", () => {
     render(<ArtistCard artist={mockArtist} />);
-    // Usar getByRole en lugar de getByTestId
-    const link = screen.getByRole("link");
+    const link = screen.getByTestId("next-link");
     expect(link.className).toContain("block h-full");
   });
 

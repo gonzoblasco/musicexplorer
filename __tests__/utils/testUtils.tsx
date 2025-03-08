@@ -1,42 +1,83 @@
 // __tests__/utils/testUtils.tsx
 import React, { ReactElement } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, RenderOptions } from "@testing-library/react";
+import { render, RenderOptions, RenderResult } from "@testing-library/react";
+import { ThemeProvider } from "next-themes";
 
-// Creamos un cliente de consulta para pruebas con configuración mínima
+// Crear un cliente de consulta para pruebas con configuración optimizada para testing
+
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
+        // Desactivar reintentos para pruebas más predecibles
         retry: false,
+        // No mantener datos en caché después del unmount
         gcTime: 0,
+        // No refrescar datos en enfoque de ventana durante pruebas
+        refetchOnWindowFocus: false,
+        // Consideramos los datos como frescos para evitar refetching automático
+        staleTime: Infinity,
       },
+    },
+    // Silenciar errores de consola durante las pruebas
+    // @ts-ignore
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      // No mostrar errores en consola durante pruebas
+      error: () => {},
     },
   });
 
-// Proveedor de tests que incluye el QueryClientProvider
+// Interfaces para los providers de test
 interface AllTheProvidersProps {
   children: React.ReactNode;
+  theme?: "light" | "dark" | "system";
 }
 
-export const AllTheProviders = ({ children }: AllTheProvidersProps) => {
+/**
+ * Wrapper que proporciona todos los providers necesarios para las pruebas
+ */
+export const AllTheProviders = ({
+  children,
+  theme = "light",
+}: AllTheProvidersProps) => {
   const testQueryClient = createTestQueryClient();
 
   return (
     <QueryClientProvider client={testQueryClient}>
-      {children}
+      <ThemeProvider attribute="class" defaultTheme={theme} enableSystem>
+        {children}
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };
 
-// Función de renderizado personalizada
-const customRender = (
-  ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">,
-) => render(ui, { wrapper: AllTheProviders, ...options });
+/**
+ * Opciones extendidas para el renderizado que incluyen theme
+ */
+interface CustomRenderOptions extends Omit<RenderOptions, "wrapper"> {
+  theme?: "light" | "dark" | "system";
+}
 
-// Re-exportamos todo lo demás
+/**
+ * Función personalizada de renderizado que envuelve el componente con los providers necesarios
+ */
+export function customRender(
+  ui: ReactElement,
+  options: CustomRenderOptions = {},
+): RenderResult {
+  const { theme = "light", ...renderOptions } = options;
+
+  return render(ui, {
+    wrapper: (props) => <AllTheProviders {...props} theme={theme} />,
+    ...renderOptions,
+  });
+}
+
+// Re-exportar todo lo demás de testing-library
 export * from "@testing-library/react";
 
-// Sobreescribimos la función render
+// Sobreescribir la función render
 export { customRender as render };
