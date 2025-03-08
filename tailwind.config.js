@@ -11,10 +11,8 @@ module.exports = {
     extend: {},
   },
   corePlugins: {
-    // Asegurarnos de que todos los plugins principales están habilitados
     preflight: true,
   },
-  // Explícitamente habilitar todas las variantes por defecto
   variants: {
     extend: {},
   },
