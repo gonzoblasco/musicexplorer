@@ -19,7 +19,7 @@ export default function ArtistPageClient() {
     isLoading: artistLoading,
     isError: artistError,
     error: artistErrorDetails,
-  } = useArtistDetails(artistId);
+  } = useArtistDetails(artistId, { enabled: !!artistId });
 
   const {
     data: albums = [],
