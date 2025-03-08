@@ -1,11 +1,18 @@
 // __tests__/components/search/SearchContent.test.tsx
 import React from "react";
-import { render } from "../../utils/testUtils"; // Importamos desde nuestro archivo de utilidades
+import { render, screen } from "../../utils/testUtils";
 import SearchContent from "../../../components/search/SearchContent";
 
-// Mock de next/navigation
+// Mock the entire hooks module
+jest.mock("../../../hooks/useArtistQueries", () => ({
+  useArtistSearch: jest.fn(),
+}));
+
+// Mock next/navigation
 jest.mock("next/navigation", () => ({
-  useSearchParams: () => new URLSearchParams({ q: "coldplay" }),
+  useSearchParams: jest.fn(() => ({
+    get: () => "coldplay",
+  })),
   useRouter: () => ({
     push: jest.fn(),
   }),
@@ -13,53 +20,85 @@ jest.mock("next/navigation", () => ({
   useParams: () => ({}),
 }));
 
-// Mock de nuestros hooks de consulta
-jest.mock("../../../hooks/useArtistQueries", () => {
-  const actual = jest.requireActual("../../../hooks/useArtistQueries");
-  return {
-    ...actual,
-    useArtistSearch: () => ({
+// Import the mocked hook after mocking
+import { useArtistSearch } from "../../../hooks/useArtistQueries";
+
+describe("SearchContent component", () => {
+  // Reset mocks before each test
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("renders loading state", () => {
+    // Type assertion to handle the mocked function
+    (useArtistSearch as jest.Mock).mockReturnValue({
+      data: [],
+      isLoading: true,
+      isError: false,
+      error: null,
+    });
+
+    render(<SearchContent />);
+
+    // Check for loader
+    const loader = screen.getByTestId("loader");
+    expect(loader).toBeInTheDocument();
+  });
+
+  it("shows no results when search returns empty", () => {
+    // Type assertion to handle the mocked function
+    (useArtistSearch as jest.Mock).mockReturnValue({
       data: [],
       isLoading: false,
       isError: false,
       error: null,
-    }),
-  };
-});
+    });
 
-describe("SearchContent component", () => {
-  it("renders without crashing", () => {
-    // Ahora usamos el render personalizado que incluye QueryClientProvider
-    expect(() => {
-      render(<SearchContent />);
-    }).not.toThrow();
+    render(<SearchContent />);
+
+    // Use more flexible text matching
+    const noResultsMessage = screen.getByText(/No se encontraron resultados/i);
+    expect(noResultsMessage).toBeInTheDocument();
   });
 
-  it("shows loading state", () => {
-    jest.mock("../../../hooks/useArtistQueries", () => ({
-      useArtistSearch: () => ({
-        data: [],
-        isLoading: true,
-        isError: false,
-        error: null,
-      }),
-    }));
+  it("shows error state when search fails", () => {
+    // Mock the hook to return an error state
+    const errorMessage = "Search error occurred";
+    (useArtistSearch as jest.Mock).mockReturnValue({
+      data: [],
+      isLoading: false,
+      isError: true,
+      error: new Error(errorMessage),
+    });
 
-    const { getByTestId } = render(<SearchContent />);
-    expect(getByTestId("loader")).toBeInTheDocument();
+    render(<SearchContent />);
+
+    // Check for error message
+    const errorElement = screen.getByText(errorMessage);
+    expect(errorElement).toBeInTheDocument();
   });
 
-  it("shows error state", () => {
-    jest.mock("../../../hooks/useArtistQueries", () => ({
-      useArtistSearch: () => ({
-        data: [],
-        isLoading: false,
-        isError: true,
-        error: new Error("Test error"),
-      }),
-    }));
+  it("renders artist list when results are found", () => {
+    // Mock the hook to return some artists
+    const mockArtists = [
+      {
+        idArtist: "1",
+        strArtist: "Test Artist",
+        strArtistThumb: "http://example.com/artist.jpg",
+      },
+    ];
 
-    const { getByText } = render(<SearchContent />);
-    expect(getByText("Test error")).toBeInTheDocument();
+    (useArtistSearch as jest.Mock).mockReturnValue({
+      data: mockArtists,
+      isLoading: false,
+      isError: false,
+      error: null,
+    });
+
+    render(<SearchContent />);
+
+    // Check for artist name
+    const artistName = screen.getByText("Test Artist");
+    expect(artistName).toBeInTheDocument();
   });
 });

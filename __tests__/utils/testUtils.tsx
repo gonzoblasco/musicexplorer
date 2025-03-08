@@ -4,8 +4,22 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { ThemeProvider } from "next-themes";
 
-// Crear un cliente de consulta para pruebas con configuración optimizada para testing
+// Mock implementation of window.matchMedia
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // Deprecated
+    removeListener: jest.fn(), // Deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
 
+// Crear un cliente de consulta para pruebas con configuración optimizada para testing
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {

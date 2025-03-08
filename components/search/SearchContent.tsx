@@ -28,16 +28,18 @@ export default function SearchContent() {
       {isError && (
         <ErrorMessage
           message={
-            error instanceof Error ? error.message : "Error al buscar artistas"
+            error instanceof Error
+              ? error.message || "Error al buscar artistas"
+              : "Error al buscar artistas"
           }
         />
       )}
 
       {isLoading ? (
-        <div className="py-12">
+        <div className="py-12" data-testid="loader">
           <Loader />
         </div>
-      ) : artists.length === 0 ? (
+      ) : artists.length === 0 && !isError ? (
         <NoResults
           message={
             query
