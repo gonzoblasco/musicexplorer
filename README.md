@@ -1,40 +1,41 @@
 # MusicExplorer
 
-MusicExplorer es una aplicación web moderna construida con Next.js 15 y TypeScript que permite explorar información
-sobre artistas musicales, sus álbumes y canciones utilizando TheAudioDB API.
+MusicExplorer es una aplicación web moderna construida con Next.js y TypeScript que permite a los usuarios explorar
+información sobre artistas musicales, sus álbumes y canciones utilizando la API de TheAudioDB. La aplicación proporciona
+una interfaz responsiva e intuitiva para el descubrimiento musical.
 
-[Ver demostración en vivo](https://musicexplorer-gb.netlify.app)
+[Ver Demo en Vivo](https://musicexplorer-gb.netlify.app)
 
-![MusicExplorer Screenshot](https://github.com/gonzoblasco/musicexplorer/blob/main/public/screenshot.png)
+![Captura de Pantalla de MusicExplorer](https://github.com/gonzoblasco/musicexplorer/blob/main/public/screenshot.png)
 
-## 🎵 Características
+## 🎵 Características Principales
 
-- **Búsqueda de artistas**: Encuentra información detallada sobre tus artistas favoritos
-- **Perfiles de artistas**: Visualiza biografías, país de origen, año de formación y enlaces a redes sociales
-- **Exploración de discografías**: Navega por álbumes completos y sus detalles
-- **Listado de canciones**: Descubre las pistas de cada álbum con su duración y enlaces a videos musicales
-- **Modo oscuro/claro**: Interfaz adaptativa con soporte para preferencias de tema del sistema
-- **Diseño responsive**: Experiencia optimizada en dispositivos móviles, tablets y escritorio
+- **Búsqueda de Artistas**: Encuentra información detallada sobre artistas musicales
+- **Perfiles de Artistas**: Visualiza biografías, país de origen, año de formación y enlaces a redes sociales
+- **Exploración de Discografía**: Navega por álbumes completos y sus detalles
+- **Listado de Canciones**: Descubre pistas de cada álbum con duración y enlaces a videos musicales
+- **Modo Oscuro/Claro**: Interfaz adaptativa con soporte para preferencias de tema del sistema
+- **Diseño Responsivo**: Experiencia optimizada en dispositivos móviles, tabletas y ordenadores de escritorio
 
 ## 🚀 Stack Tecnológico
 
 ### Frontend
 
-- **Next.js 15**: Framework React con App Router para routing basado en sistema de archivos y Server Components
-- **React 19**: Biblioteca UI con los últimos hooks y patrones
-- **TypeScript**: Tipado estático para mayor seguridad y mejor DX
-- **Tailwind CSS 4**: Utilidades CSS de primera clase para estilizado rápido y consistente
+- **Next.js 14**: Framework de React con App Router para enrutamiento basado en archivos y Componentes de Servidor
+- **React 18**: Biblioteca de UI con hooks y patrones
+- **TypeScript**: Tipado estático para mayor seguridad y mejor experiencia de desarrollo
+- **Tailwind CSS 3**: CSS utilitario para estilizado rápido y consistente
 
 ### Estado y Datos
 
-- **TanStack Query (React Query)**: Gestión de estado del servidor, caché y actualización de datos
+- **TanStack Query (React Query)**: Gestión de estado del servidor, caché y actualizaciones de datos
 - **next-themes**: Integración de modo oscuro/claro con persistencia
 
-### Testing
+### Pruebas
 
-- **Jest**: Framework de testing para pruebas unitarias y de componentes
-- **React Testing Library**: Testing orientado a comportamiento para componentes React
-- **Playwright**: Testing end-to-end para flujos de usuario completos
+- **Jest**: Framework para pruebas unitarias y de componentes
+- **React Testing Library**: Pruebas orientadas al comportamiento para componentes React
+- **Playwright**: Pruebas end-to-end para flujos completos de usuario
 
 ### API
 
@@ -46,19 +47,20 @@ El proyecto sigue una arquitectura moderna basada en:
 
 ### Componentes y Patrones
 
-- **Server y Client Components**: Separación clara entre componentes renderizados en servidor y cliente
-- **Patrón de Container/Presentational**: Separación de lógica y UI para mejor mantenibilidad
-- **Custom Hooks**: Abstracción de lógica reutilizable (useArtistQueries, useAlbumQueries)
-- **Suspense**: Mejora de UX durante carga de datos
-- **Renderizado condicional**: Manejo elegante de estados de carga, error y datos vacíos
+- **Componentes de Servidor y Cliente**: Clara separación entre componentes renderizados en el servidor y componentes
+  del lado del cliente
+- **Patrón Contenedor/Presentación**: Separación de lógica y UI para mejor mantenibilidad
+- **Hooks Personalizados**: Abstracción de lógica reutilizable (useArtistQueries, useAlbumQueries)
+- **Suspense**: Mejora de la experiencia de usuario durante la carga de datos
+- **Renderizado Condicional**: Manejo elegante de estados de carga, error y datos vacíos
 
-### Estructura de Directorios
+### Estructura del Proyecto
 
 ```
 music-explorer/
 ├── app/                   # Páginas y rutas (Next.js App Router)
 │   ├── album/[id]         # Página de detalle de álbum
-│   ├── api/               # API Routes para endpoints del servidor
+│   ├── api/               # Rutas API para endpoints del servidor
 │   ├── artist/[id]        # Página de detalle de artista
 │   ├── search             # Página de resultados de búsqueda
 │   └── page.tsx           # Página de inicio
@@ -68,61 +70,61 @@ music-explorer/
 │   ├── artist/            # Componentes relacionados con artistas
 │   ├── common/            # Componentes comunes (errores, sin resultados)
 │   ├── home/              # Componentes de la página de inicio
-│   ├── layout/            # Componentes de estructura (header, footer)
+│   ├── layout/            # Componentes de estructura (cabecera, pie de página)
 │   ├── search/            # Componentes de búsqueda
 │   └── ui/                # Componentes básicos de UI (botones, inputs)
 │
-├── hooks/                 # Custom hooks para lógica reutilizable
+├── hooks/                 # Hooks personalizados para lógica reutilizable
 │
 ├── lib/                   # Utilidades y servicios
-│   ├── api/               # Funciones para interactuar con APIs
+│   ├── api/               # Funciones para interacciones con API
 │   └── utils/             # Utilidades generales
 │
 ├── public/                # Archivos estáticos
 │
-├── types/                 # Definiciones de tipos TypeScript
+├── types/                 # Definiciones de tipos de TypeScript
 │
-└── __tests__/             # Tests unitarios y de componentes
+└── __tests__/             # Pruebas unitarias y de componentes
 ```
 
 ## 🧠 Decisiones Técnicas
 
 ### 1. Next.js App Router
 
-Se eligió utilizar el App Router de Next.js para aprovechar:
+El App Router en Next.js fue elegido para aprovechar:
 
-- **Mejores prácticas SEO** con generación de metadatos
+- **Mejores prácticas de SEO** con generación de metadatos
 - **Streaming y carga progresiva** para una mejor experiencia de usuario
-- **Server Components** para reducir el JavaScript enviado al cliente
-- **API Routes** para endpoints de backend seguros
+- **Componentes de Servidor** para reducir el JavaScript enviado al cliente
+- **Rutas API** para endpoints de backend seguros
 
 ### 2. TanStack Query
 
 Implementado para:
 
 - **Gestión eficiente de caché** con invalidación automática
-- **Reintento de peticiones** con backoff exponencial
-- **Estados integrados** de carga, error y datos
+- **Reintentos de solicitudes** con retroceso exponencial
+- **Estados integrados** para carga, error y datos
 - **Stale-while-revalidate** para mantener la UI actualizada
 
-### 3. Estrategia de Testing
+### 3. Estrategia de Pruebas
 
-Enfoque en tres niveles:
+Enfoque de tres niveles:
 
-- **Tests unitarios** para utilidades y hooks
-- **Tests de componentes** para garantizar renderizado correcto y manejo de props
-- **Tests end-to-end** para validar flujos de usuario completos
+- **Pruebas unitarias** para utilidades y hooks
+- **Pruebas de componentes** para asegurar el renderizado correcto y el manejo de props
+- **Pruebas end-to-end** para validar flujos completos de usuario
 
 ### 4. Optimización de Rendimiento
 
-- **Lazy loading** de imágenes con el componente Image de Next.js
-- **Suspense boundaries** para carga progresiva de componentes
-- **Debouncing** en búsquedas para reducir peticiones innecesarias
-- **Memoización** para evitar renderizados innecesarios
+- **Carga perezosa** de imágenes con el componente Image de Next.js
+- **Límites de Suspense** para carga progresiva de componentes
+- **Debouncing** en búsquedas para reducir solicitudes innecesarias
+- **Memoización** para prevenir re-renderizados innecesarios
 
 ## 🛠️ Instalación y Desarrollo
 
-### Requisitos Previos
+### Prerrequisitos
 
 - Node.js 18.17.0 o superior
 - npm 9.0.0 o superior
@@ -150,58 +152,61 @@ Enfoque en tres niveles:
 ### Scripts Disponibles
 
 - `npm run dev` - Inicia el servidor de desarrollo
-- `npm run dev:turbo` - Inicia el servidor con Turbopack para desarrollo más rápido
+- `npm run dev:turbo` - Inicia el servidor con Turbopack para un desarrollo más rápido
 - `npm run build` - Construye la aplicación para producción
 - `npm run start` - Inicia la aplicación construida
-- `npm test` - Ejecuta los tests unitarios y de componentes
-- `npm run test:watch` - Ejecuta los tests en modo observador
-- `npm run test:coverage` - Genera informe de cobertura de tests
-- `npm run test:e2e` - Ejecuta los tests end-to-end con Playwright
+- `npm test` - Ejecuta pruebas unitarias y de componentes
+- `npm run test:watch` - Ejecuta pruebas en modo observador
+- `npm run test:coverage` - Genera informe de cobertura de pruebas
+- `npm run test:e2e` - Ejecuta pruebas end-to-end con Playwright
 
-## 🧪 Estrategia de Testing
+## 🧪 Estrategia de Pruebas
 
-El proyecto implementa una estrategia de testing completa:
+El proyecto implementa una estrategia de pruebas integral:
 
-- **Tests unitarios**: Para funciones puras y hooks
-- **Tests de componentes**: Para verificar renderizado y comportamiento
-- **Tests de integración**: Para validar la interacción entre componentes
-- **Tests end-to-end**: Para probar flujos completos de usuario
+- **Pruebas unitarias**: Para funciones puras y hooks
+- **Pruebas de componentes**: Para verificar el renderizado y comportamiento
+- **Pruebas de integración**: Para validar interacciones entre componentes
+- **Pruebas end-to-end**: Para probar flujos completos de usuario
 
-Los tests están organizados usando Jest para tests unitarios y de componentes, y Playwright para tests end-to-end.
+Las pruebas están organizadas usando Jest para pruebas unitarias y de componentes, y Playwright para pruebas end-to-end.
 
-## 📝 Notas sobre TheAudioDB API
+## 📝 Notas sobre la API de TheAudioDB
 
 Esta aplicación utiliza la API gratuita de [TheAudioDB](https://www.theaudiodb.com/api_guide.php), que tiene algunas
 limitaciones:
 
 - Búsqueda limitada a ciertos artistas
-- Límite de consultas diarias
+- Límites diarios de consultas
 - Algunas características premium no disponibles
 
 Para pruebas, puedes buscar artistas populares como "coldplay", "daft punk", "madonna", "metallica", entre otros.
 
-## 🚧 Roadmap
+## 🚧 Desarrollo Futuro
 
-Características planeadas para futuras versiones:
+Características planeadas para versiones futuras:
 
-- [ ] Implementación de PWA para uso offline
-- [ ] Reproductor de música integrado con previews de canciones
+- [ ] Implementación de PWA para uso sin conexión
+- [ ] Reproductor de música integrado con vistas previas de canciones
 - [ ] Autenticación para guardar artistas favoritos
 - [ ] Vista de letras de canciones
 - [ ] Filtrado avanzado de álbumes y canciones
 - [ ] Integración con servicios de streaming
 
-## 🤝 Contribuir
+Al implementar nuevas características, considera cómo se alinean con la arquitectura existente y la experiencia de
+usuario.
+
+## 🤝 Flujo de Contribución
 
 Las contribuciones son bienvenidas. Para contribuir:
 
-1. Haz fork del repositorio
-2. Crea una rama para tu característica (`git checkout -b feature/amazing-feature`)
-3. Haz commit de tus cambios (`git commit -m 'Add some amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
+1. Haz un fork del repositorio
+2. Crea una rama de características (`git checkout -b feature/caracteristica-asombrosa`)
+3. Haz commit de tus cambios (`git commit -m 'Añadir alguna característica asombrosa'`)
+4. Haz push a la rama (`git push origin feature/caracteristica-asombrosa`)
 5. Abre un Pull Request
 
-Por favor, asegúrate de que tus cambios pasen todos los tests.
+Por favor, asegúrate de que tus cambios pasen todas las pruebas antes de enviar un Pull Request.
 
 ## 📄 Licencia
 
@@ -209,9 +214,9 @@ Distribuido bajo la Licencia MIT. Ver `LICENSE` para más información.
 
 ## 📱 Contacto
 
-Tu Nombre - [@tu_twitter](https://twitter.com/tu_twitter) - email@example.com
+Tu Nombre - [@your_twitter](https://twitter.com/your_twitter) - email@example.com
 
-Link del Proyecto: [https://github.com/yourusername/music-explorer](https://github.com/yourusername/music-explorer)
+Enlace del Proyecto: [https://github.com/yourusername/music-explorer](https://github.com/yourusername/music-explorer)
 
 ---
 
