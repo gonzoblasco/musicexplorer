@@ -1,6 +1,9 @@
 "use client";
 
-import { useAlbumDetails, useAlbumTracks } from "../../hooks/useAlbumQueries";
+import {
+  useAlbumDetails,
+  useAlbumTracksWithOptions,
+} from "../../hooks/useAlbumQueries";
 import { useArtistDetails } from "../../hooks/useArtistQueries";
 import AlbumDetail from "./AlbumDetail";
 import TrackList from "./TrackList";
@@ -53,13 +56,13 @@ export default function AlbumPageClient({
     isLoading: isAlbumLoading,
     isError: isAlbumError,
     error: albumErrorDetails,
-  } = useAlbumDetails(albumId, { enabled: shouldFetchAlbumData });
+  } = useAlbumDetails(albumId);
 
   // Tracks fetch
-  const { data: tracks = [], isLoading: isTracksLoading } = useAlbumTracks(
-    albumId,
-    { enabled: shouldFetchTracksData && !!album?.idAlbum },
-  );
+  const { data: tracks = [], isLoading: isTracksLoading } =
+    useAlbumTracksWithOptions(albumId, {
+      enabled: shouldFetchTracksData && !!album?.idAlbum,
+    });
 
   // Artist fetch
   const { data: artist, isLoading: isArtistLoading } = useArtistDetails(
@@ -67,8 +70,8 @@ export default function AlbumPageClient({
     { enabled: shouldFetchArtistData && !!album?.idArtist },
   );
 
-  // Renderizando cargando si cualquier llamada está cargando
-  if (isAlbumLoading || isTracksLoading || isArtistLoading) {
+  // Renderizando cargando si el álbum o el artista están cargando
+  if (isAlbumLoading || isArtistLoading) {
     return <AlbumSkeletonLoader />;
   }
 

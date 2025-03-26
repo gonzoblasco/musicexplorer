@@ -77,12 +77,11 @@ export function useAlbum(
     onError?: (error: ApiError) => void;
   },
 ) {
-  // @ts-ignore
   return useAlbumDetails(albumId || "", {
     enabled: !!albumId && options?.enabled !== false,
     onSuccess: options?.onSuccess,
     onError: options?.onError,
-  });
+  } as any);
 }
 
 /**
@@ -100,10 +99,9 @@ export function useAlbumTracksWithOptions(
     onError?: (error: ApiError) => void;
   },
 ) {
-  // @ts-ignore
   return useAlbumTracks(albumId || "", {
     enabled: !!albumId && options?.enabled !== false,
     onSuccess: options?.onSuccess,
     onError: options?.onError,
-  });
+  } as any);
 }

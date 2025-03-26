@@ -74,14 +74,13 @@ export function useArtist(
     select?: (data: Artist | null) => any;
   } & Partial<UseQueryOptions<Artist | null, ApiError>>,
 ) {
-  // @ts-ignore
   return useArtistDetails(artistId || "", {
     enabled: !!artistId && options?.enabled !== false,
     onSuccess: options?.onSuccess,
     onError: options?.onError,
     select: options?.select,
     ...(options || {}),
-  });
+  } as any);
 }
 
 /**
@@ -101,12 +100,11 @@ export function useArtistSearchWithOptions(
     refetchOnWindowFocus?: boolean;
   },
 ) {
-  // @ts-ignore
   return useArtistSearch(query || "", {
     enabled: !!query && options?.enabled !== false,
     onSuccess: options?.onSuccess,
     onError: options?.onError,
     select: options?.select,
     refetchOnWindowFocus: options?.refetchOnWindowFocus,
-  });
+  } as any);
 }
